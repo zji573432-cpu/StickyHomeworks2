@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
     <ApplicationManifest>app.manifest</ApplicationManifest>
 	<IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
 	<ApplicationIcon>Assets\AppLogo.ico</ApplicationIcon>
@@ -18,7 +22,7 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <EditorConfigFiles Remove="E:\Coding\StickyHomeworks\StickyHomeworks\.editorconfig" />
+    <EditorConfigFiles Remove="E:\Coding\StickyHomeworks2\StickyHomeworks2\.editorconfig" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\AppLogo.png" />
@@ -26,11 +30,11 @@
     <None Remove="Assets\光辉矢愿_瞄准.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="E:\Coding\StickyHomeworks\StickyHomeworks\.editorconfig" />
+    <None Include="E:\Coding\StickyHomeworks2\StickyHomeworks2\.editorconfig" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ElysiaFramework\ElysiaFramework.csproj" />
-    <ProjectReference Include="..\StickyHomeworks.Core\StickyHomeworks.Core.csproj" />
+    <ProjectReference Include="..\StickyHomeworks2.Core\StickyHomeworks2.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\**" />

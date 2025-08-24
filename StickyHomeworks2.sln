@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34004.107
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StickyHomeworks", "StickyHomeworks\StickyHomeworks.csproj", "{88C2773A-34FB-44BB-A377-A66B63983D2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StickyHomeworks2", "StickyHomeworks2\StickyHomeworks2.csproj", "{88C2773A-34FB-44BB-A377-A66B63983D2E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StickyHomeworks.Web", "StickyHomeworks.Web\StickyHomeworks.Web.csproj", "{CA34684C-FE27-4EA2-8EBE-B46287D231F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StickyHomeworks2.Web", "StickyHomeworks2.Web\StickyHomeworks2.Web.csproj", "{CA34684C-FE27-4EA2-8EBE-B46287D231F3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElysiaFramework", "ElysiaFramework\ElysiaFramework.csproj", "{1DA2E4CF-8B02-4960-AE3A-57ECE280F75B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StickyHomeworks.Core", "StickyHomeworks.Core\StickyHomeworks.Core.csproj", "{7049A8AB-4754-4620-BE87-A087E627B46D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StickyHomeworks2.Core", "StickyHomeworks2.Core\StickyHomeworks2.Core.csproj", "{7049A8AB-4754-4620-BE87-A087E627B46D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
