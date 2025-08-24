@@ -1,7 +1,7 @@
-# StickyHomeworks
+# StickyHomeworks2
 
 > [!warning]
-> 这个项目还在早期开发中
+> 这个项目还在开发中
 
 StickyHomeworks 是一款支持富文本的桌面作业贴工具。
 
