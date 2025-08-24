@@ -17,7 +17,7 @@ jobs:
 
     env:
       Solution_Name: StickyHomeworks2.sln          
-      Project_Path: StickyHomeworks/StickyHomeworks2.csproj   
+      Project_Path: StickyHomeworks2/StickyHomeworks2.csproj   
 
     steps:
     - name: Checkout
