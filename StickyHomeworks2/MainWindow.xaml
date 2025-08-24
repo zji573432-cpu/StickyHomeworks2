@@ -70,11 +70,11 @@
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
-        <StackPanel x:Key="ExitConfirm" VerticalAlignment="Stretch" Margin="16" MaxWidth="400">
-            <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}">
+        <StackPanel x:Key="ExitConfirm" VerticalAlignment="Stretch" Margin="50" MaxWidth="400" >
+            <TextBlock Margin="47 -5 0 0" Style="{StaticResource MaterialDesignHeadline6TextBlock}">
                 <Run Text="退出应用"/>
             </TextBlock>
-            <TextBlock Margin="0 6 0 0" TextWrapping="Wrap">
+            <TextBlock Margin="30 0 0 0" TextWrapping="Wrap">
                 <Run Text="确定要退出应用吗？"/>
             </TextBlock>
             <StackPanel Orientation="Horizontal" Margin="0 8 0 0" HorizontalAlignment="Right">
@@ -86,7 +86,7 @@
                         </system:Boolean>
                     </Button.CommandParameter>
                 </Button>
-                <Button Content="取消" HorizontalAlignment="Right" Style="{DynamicResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="6 0 0 0">
+                <Button Content="取消" HorizontalAlignment="Right" Style="{DynamicResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="60 0 0 0">
                     <Button.CommandParameter>
                         <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
                             False
@@ -207,6 +207,7 @@
                                         <Separator Margin="-12 4"/>
                                         <MenuItem Margin="-12 0" Icon="{materialDesign:PackIcon Refresh}" Header="恢复过期的作业" Click="MenuItemRecoverExpiredHomework_OnClick" IsEnabled="{Binding ViewModel.CanRecoverExpireHomework}"/>
                                         <MenuItem Margin="-12 0" Icon="{materialDesign:PackIcon CogOutline}" Header="更多设置…" Click="ButtonSettings_OnClick"/>
+                                        <MenuItem Margin="-12 0" Icon="{materialDesign:PackIcon ExitToApp}" Header="退出" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" CommandParameter="{StaticResource ExitConfirm}" />
                                     </StackPanel>
                                 </Grid>
                             </materialDesign:PopupEx>
@@ -224,8 +225,6 @@
                             <Button Content="{materialDesign:PackIcon Add, Size=18}" ToolTip="布置作业"
                                     Visibility="{Binding ViewModel.IsExpanded, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Click="ButtonCreateHomework_OnClick" />
-                            <Button Content="{materialDesign:PackIcon Settings, Size=18}" ToolTip="设置…"
-                                    Click="ButtonSettings_OnClick" />
                             <Button Margin="4 0" Click="ButtonExpandingSwitcher_OnClick">
                                 <Button.Style>
                                     <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignToolForegroundButton}">
@@ -242,9 +241,6 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Content="{materialDesign:PackIcon Close, Size=18}" ToolTip="退出" 
-                                    Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
-                                    CommandParameter="{StaticResource ExitConfirm}"/>
                         </StackPanel>
                     </Grid>
                 </materialDesign:ColorZone>
