@@ -16,7 +16,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: StickyHomeworks2.sln          
+      Solution_Name: StickyHomeworks.sln          
       Project_Path: StickyHomeworks/StickyHomeworks.csproj   
 
     steps:
@@ -53,5 +53,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: StickyHomeworks2-${{ matrix.configuration }}
+        name: StickyHomeworks-${{ matrix.configuration }}
         path: ./publish
