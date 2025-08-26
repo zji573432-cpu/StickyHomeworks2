@@ -292,23 +292,86 @@ public partial class MainWindow : Window
 
     private void RepositionEditingWindow()
     {
-        if (ViewModel.SelectedListBoxItem == null) 
+        if (ViewModel.SelectedListBoxItem == null)
             return;
-        Debug.WriteLine("selected changed");
+
         try
         {
             GetCurrentDpi(out var dpiX, out var dpiY);
-            var p = ViewModel.SelectedListBoxItem.PointToScreen(new Point(ViewModel.SelectedListBoxItem.ActualWidth, 0));
+
+
+            var itemRect = new Rect(
+                ViewModel.SelectedListBoxItem.PointToScreen(new Point(0, 0)), // 左上角
+                new Point(
+                    ViewModel.SelectedListBoxItem.PointToScreen(new Point(ViewModel.SelectedListBoxItem.ActualWidth, 0)).X,
+                    ViewModel.SelectedListBoxItem.PointToScreen(new Point(0, ViewModel.SelectedListBoxItem.ActualHeight)).Y
+                )
+            );
+
+
             var screen = Screen.PrimaryScreen!.WorkingArea;
+            var screenRect = new Rect(screen.Left, screen.Top, screen.Width, screen.Height);
+
+
             var homeworkEditWindow = AppEx.GetService<HomeworkEditWindow>();
-            homeworkEditWindow.Left = p.X / dpiX;
-            homeworkEditWindow.Top = Math.Min(p.Y, screen.Bottom - homeworkEditWindow.ActualHeight * dpiY) / dpiY;
+
+
+            var windowWidthPx = (int)(homeworkEditWindow.ActualWidth * dpiX);
+            var windowHeightPx = (int)(homeworkEditWindow.ActualHeight * dpiY);
+
+            double targetLeftPx = 0;
+            double targetTopPx = 0;
+
+
+      
+            double preferredRight = itemRect.Right; 
+            if (preferredRight + windowWidthPx <= screenRect.Right)
+            {
+
+                targetLeftPx = preferredRight;
+            }
+            else if (itemRect.Left - windowWidthPx >= screenRect.Left)
+            {
+
+                targetLeftPx = itemRect.Left - windowWidthPx;
+            }
+            else
+            {
+
+                targetLeftPx = Math.Max(screenRect.Left, itemRect.Left + (itemRect.Width - windowWidthPx) / 2);
+
+                targetLeftPx = Math.Max(screenRect.Left, targetLeftPx);
+            }
+
+            double preferredTop = itemRect.Top;
+            if (preferredTop + windowHeightPx <= screenRect.Bottom && preferredTop >= screenRect.Top)
+            {
+           
+                targetTopPx = preferredTop;
+            }
+            else if (preferredTop + windowHeightPx > screenRect.Bottom && preferredTop - windowHeightPx >= screenRect.Top)
+            {
+                targetTopPx = preferredTop - windowHeightPx;
+            }
+            else
+            {
+
+                targetTopPx = itemRect.Top + (itemRect.Height - windowHeightPx) / 2;
+               
+                targetTopPx = Math.Max(screenRect.Top, targetTopPx); 
+                targetTopPx = Math.Min(targetTopPx, screenRect.Bottom - windowHeightPx);
+            }
+
+            homeworkEditWindow.Left = targetLeftPx / dpiX;
+            homeworkEditWindow.Top = targetTopPx / dpiY;
+
+
         }
         catch (Exception e)
         {
-            // ignored
         }
     }
+
 
     private void ButtonRemoveHomework_OnClick(object sender, RoutedEventArgs e)
     {
