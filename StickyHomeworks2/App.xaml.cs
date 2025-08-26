@@ -33,9 +33,9 @@ public partial class App : AppEx
         Mutex = new Mutex(true, "StickyHomeworks.Lock", out var createNew);
         if (!createNew)
         {
-            MessageBox.Show("应用已经在运行中，请勿重复启动第二个实例。");
+            SingleInstanceWarning warningWindow = new();
+            warningWindow.ShowDialog();
             Environment.Exit(0);
-            
         }
 
         Host = Microsoft.Extensions.Hosting.Host.

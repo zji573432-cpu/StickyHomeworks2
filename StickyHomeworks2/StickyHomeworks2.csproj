@@ -1,54 +1,60 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable> 
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UseWPF>true</UseWPF>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-    <SelfContained>true</SelfContained>
-    <PublishSingleFile>true</PublishSingleFile>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-	<IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
-	<ApplicationIcon>Assets\AppLogo.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-    <DebugType>embedded</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-    <DebugType>embedded</DebugType>
-  </PropertyGroup>
-  <ItemGroup>
-    <EditorConfigFiles Remove="E:\Coding\StickyHomeworks2\StickyHomeworks2\.editorconfig" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Assets\AppLogo.png" />
-    <None Remove="Assets\Contributiors\HelloWRC%4064w.jpg" />
-    <None Remove="Assets\光辉矢愿_瞄准.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="E:\Coding\StickyHomeworks2\StickyHomeworks2\.editorconfig" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ElysiaFramework\ElysiaFramework.csproj" />
-    <ProjectReference Include="..\StickyHomeworks2.Core\StickyHomeworks2.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Emoji.Wpf" Version="0.3.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.49-beta">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="WindowsShortcutFactory" Version="1.1.0" />
-  </ItemGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+		<RuntimeIdentifier>win-x86</RuntimeIdentifier>
+		<SelfContained>true</SelfContained>
+		<PublishSingleFile>true</PublishSingleFile>
+		<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+		<PublishCompress>true</PublishCompress>
+		<PublishReadyToRun>false</PublishReadyToRun>
+		<DebugType>none</DebugType>
+		<GenerateDocumentationFile>false</GenerateDocumentationFile>
+		<IlcOptimizationPreference>Size</IlcOptimizationPreference>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
+		<ApplicationIcon>Assets\AppLogo.ico</ApplicationIcon>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+	<ItemGroup>
+		<EditorConfigFiles Remove="E:\Coding\StickyHomeworks2\StickyHomeworks2\.editorconfig" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="E:\Coding\StickyHomeworks2\StickyHomeworks2\.editorconfig" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\ElysiaFramework\ElysiaFramework.csproj" />
+		<ProjectReference Include="..\StickyHomeworks2.Core\StickyHomeworks2.Core.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove="Assets\AppLogo.png" />
+		<None Remove="Assets\Contributiors\HelloWRC%4064w.jpg" />
+		<None Remove="Assets\光辉矢愿_瞄准.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Assets\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Emoji.Wpf" Version="0.3.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.49-beta">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="WindowsShortcutFactory" Version="1.1.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1" Condition="'$(Configuration)' == 'Debug'"/>
+	</ItemGroup>
 </Project>
