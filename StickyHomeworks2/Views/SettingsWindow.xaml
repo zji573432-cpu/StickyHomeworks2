@@ -104,6 +104,8 @@
                 <models:ContributionMember
                     AvatarImage="/Assets/Contributiors/HelloWRC@64w.jpg"
                     Name="HelloWRC" Description="软件作者，写代码巨水（划掉）" />
+                <models:ContributionMember
+                    Name="晒~居" Description="软件作者，写代码也一样水（划掉）" />
             </ListView>
         </Grid>
 
