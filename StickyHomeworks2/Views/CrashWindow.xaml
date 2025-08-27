@@ -1,4 +1,4 @@
-﻿<ely:MyWindow x:Class="StickyHomeworks.Views.CrashWindow"
+<ely:MyWindow x:Class="StickyHomeworks.Views.CrashWindow"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -17,7 +17,9 @@
                    mc:Ignorable="d"
                    Icon="/Assets/AppLogo.png"
                    Closing="CrashWindow_OnClosed"
-                   Title="崩溃啦！" Height="450" Width="800">
+                   WindowStyle="None"
+                   AllowsTransparency="True"
+                   Height="450" Width="800">
     <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
