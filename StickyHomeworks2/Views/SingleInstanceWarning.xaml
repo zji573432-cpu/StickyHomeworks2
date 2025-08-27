@@ -13,15 +13,16 @@
       TextOptions.TextRenderingMode="Auto"        
       Background="{DynamicResource MaterialDesignPaper}"
       FontFamily="{StaticResource HarmonyOsSans}"
-      Title="应用已在运行中" 
       Height="250" 
       Width="500"
+      WindowStyle="None"
+      AllowsTransparency="True"
       WindowStartupLocation="CenterScreen"
       ResizeMode="NoResize">
 
-    <Grid Margin="20 5 17 15">
+    <Grid Margin="20 5 17 0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="160"/>
+            <RowDefinition Height="190"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" TextWrapping="Wrap">
