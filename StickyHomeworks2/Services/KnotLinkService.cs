@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
 using KnotLink;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -8,8 +9,11 @@ using StickyHomeworks.Models;
 
 namespace StickyHomeworks.Services;
 
-public class KnotLinkService : IHostedService
+public class KnotLinkService : ObservableRecipient, IHostedService
 {
+    private const string AppIdConst = "com.stickyhomeworks2";
+    private const string OpenSocketIdConst = "homework";
+
     private readonly ProfileService _profileService;
     private readonly SettingsService _settingsService;
     private readonly ILogger<KnotLinkService> _logger;
@@ -18,6 +22,34 @@ public class KnotLinkService : IHostedService
 
     private OpenSocketResponser? _responser;
     private CancellationTokenSource? _cts;
+    private bool _isConnected;
+    private string _statusText = "未连接";
+
+    public string AppId => AppIdConst;
+    public string OpenSocketId => OpenSocketIdConst;
+
+    public bool IsConnected
+    {
+        get => _isConnected;
+        private set
+        {
+            if (value == _isConnected) return;
+            _isConnected = value;
+            OnPropertyChanged();
+            StatusText = value ? "已连接" : "连接断开";
+        }
+    }
+
+    public string StatusText
+    {
+        get => _statusText;
+        private set
+        {
+            if (value == _statusText) return;
+            _statusText = value;
+            OnPropertyChanged();
+        }
+    }
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -57,11 +89,14 @@ public class KnotLinkService : IHostedService
         {
             try
             {
+                StatusText = "正在连接...";
                 _logger.LogInformation("正在连接 KnotLink 服务 (127.0.0.1:6378)...");
-                _responser = new OpenSocketResponser("com.stickyhomeworks2", "homework");
+                _responser = new OpenSocketResponser(AppIdConst, OpenSocketIdConst);
                 _responser.OnQuestionAsync = HandleRequestAsync;
+                IsConnected = true;
                 _logger.LogInformation(
-                    "KnotLink OpenSocketResponser 已注册 (appid=com.stickyhomeworks2, opensocketid=homework)");
+                    "KnotLink OpenSocketResponser 已注册 (appid={AppId}, opensocketid={SocketId})",
+                    AppIdConst, OpenSocketIdConst);
 
                 // 阻塞等待取消信号，保持后台线程存活
                 var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -69,15 +104,19 @@ public class KnotLinkService : IHostedService
                 await tcs.Task;
 
                 _logger.LogInformation("KnotLink 服务收到取消信号，正在退出...");
+                IsConnected = false;
                 break;
             }
             catch (OperationCanceledException)
             {
+                IsConnected = false;
                 break;
             }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "KnotLink 连接失败，5 秒后重试...");
+                IsConnected = false;
+                StatusText = $"连接失败: {ex.Message}";
                 try { _responser?.Dispose(); } catch { /* ignore */ }
                 _responser = null;
                 try { await Task.Delay(5000, ct); } catch (OperationCanceledException) { break; }

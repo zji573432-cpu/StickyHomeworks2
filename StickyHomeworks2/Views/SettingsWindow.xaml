@@ -1315,6 +1315,44 @@
 
 
                     <!-- 关于 -->
+                    <TabItem Header="KnotLink">
+                        <ScrollViewer>
+                            <StackPanel Style="{StaticResource SettingsPageStackPanelStyle}">
+                                <TextBlock Text="KnotLink 联动"
+                                    Style="{StaticResource MaterialDesignHeadline5TextBlock}"/>
+                                <TextBlock Margin="0 8 0 12" Opacity="0.75"
+                                    Text="通过 KnotLink 协议接收教师端远程请求，实现作业数据同步"/>
+
+                                <ely:SettingsCard IconGlyph="Connection"
+                                    Header="连接状态"
+                                    Description="KnotLink 服务当前运行状态">
+                                    <ely:SettingsCard.Switcher>
+                                        <TextBlock Text="{Binding KnotLinkService.StatusText}"
+                                            Opacity="0.75" VerticalAlignment="Center"/>
+                                    </ely:SettingsCard.Switcher>
+                                </ely:SettingsCard>
+
+                                <ely:SettingsCard IconGlyph="Identifier"
+                                    Header="App ID"
+                                    Description="KnotLink 应用标识符">
+                                    <ely:SettingsCard.Switcher>
+                                        <TextBlock Text="{Binding KnotLinkService.AppId}"
+                                            Opacity="0.75" VerticalAlignment="Center"/>
+                                    </ely:SettingsCard.Switcher>
+                                </ely:SettingsCard>
+
+                                <ely:SettingsCard IconGlyph="AccessPoint"
+                                    Header="OpenSocket ID"
+                                    Description="KnotLink 开放套接字标识符">
+                                    <ely:SettingsCard.Switcher>
+                                        <TextBlock Text="{Binding KnotLinkService.OpenSocketId}"
+                                            Opacity="0.75" VerticalAlignment="Center"/>
+                                    </ely:SettingsCard.Switcher>
+                                </ely:SettingsCard>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
                     <TabItem Header="关于">
                         <ScrollViewer>
                             <StackPanel Margin="6"
