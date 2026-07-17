@@ -64,7 +64,7 @@
                             <ColumnDefinition Width="4"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <ComboBox Grid.Column="0" 
+                        <ComboBox Grid.Column="0"
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                   materialDesign:HintAssist.Hint="科目"
                                   SelectionChanged="Selector_OnSelectionChanged"

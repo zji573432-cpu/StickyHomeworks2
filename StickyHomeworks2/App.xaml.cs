@@ -74,6 +74,8 @@ public partial class App : AppEx
                 services.AddSingleton<ImageService>();
                 services.AddSingleton<ClassIslandIpcService>();
                 services.AddHostedService(sp => sp.GetRequiredService<ClassIslandIpcService>());
+                services.AddSingleton<KnotLinkService>();
+                services.AddHostedService(sp => sp.GetRequiredService<KnotLinkService>());
                 services.AddSingleton<AppLogService>();
                 services.AddSingleton<ILoggerProvider, AppLoggerProvider>();
                 services.AddSingleton<ILoggerProvider, FileLoggerProvider>();
