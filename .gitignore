@@ -21,6 +21,9 @@ mono_crash.*
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+# KnotLink-Output/release 需要跟踪清单文件，抵消上面的 release/ 排除规则
+!KnotLink-Output/release/
+!KnotLink-Output/release/**/
 x64/
 x86/
 [Ww][Ii][Nn]32/

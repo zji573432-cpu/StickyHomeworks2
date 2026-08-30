@@ -1,0 +1,8 @@
+{
+  "app_id": "com.github.stickyhomeworks2.stickyhomeworks2",
+  "app_name": "StickyHomeworks2",
+  "author": "StickyHomeworks2",
+  "version": "v1.0.0",
+  "description": "支持富文本的桌面作业贴工具，可通过 KnotLink 远程管理作业与窗口",
+  "download_url": "https://github.com/StickyHomeworks2/StickyHomeworks2/releases/latest"
+}

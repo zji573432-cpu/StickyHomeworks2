@@ -6,7 +6,7 @@ SH2 通过 KnotLink 协议（本地 TCP broker）暴露作业管理接口。
 
 | 属性 | 值 |
 |---|---|
-| **appid** | `com.stickyhomeworks2` |
+| **appid** | `com.github.stickyhomeworks2.stickyhomeworks2` |
 | **opensocketid** | `homework` |
 | **角色** | OpenSocketResponser (端口 6378) |
 | **协议格式** | KLKVMap (`key=value;key=value`) |
@@ -212,7 +212,7 @@ status=ok
 from knotlink import OpenSocketQuerier, KLKVMap
 import json
 
-q = OpenSocketQuerier('com.stickyhomeworks2', 'homework')
+q = OpenSocketQuerier('com.github.stickyhomeworks2.stickyhomeworks2', 'homework')
 
 # 心跳
 print(q.query('action=ping'))  # status=pong

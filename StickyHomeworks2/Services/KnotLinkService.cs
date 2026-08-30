@@ -11,7 +11,7 @@ namespace StickyHomeworks.Services;
 
 public class KnotLinkService : ObservableRecipient, IHostedService
 {
-    private const string AppIdConst = "com.stickyhomeworks2";
+    private const string AppIdConst = KnotLinkRegistration.AppId;
     private const string HomeworkSocketId = "homework";
     private const string ControlSocketId = "control";
 

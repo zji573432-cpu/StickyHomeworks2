@@ -1,8 +1,25 @@
 {
   "appName": "StickyHomeworks2",
+  "specVersion": "1.0",
+  "manifestVersion": "1.0.0",
   "openSocket": {
+    "ping-homework": {
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
+      "openSocketID": "homework",
+      "description": "心跳检测，检查 homework 接口是否在线",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "ping",
+          "description": "操作类型（固定为 ping）"
+        }
+      },
+      "returns": [
+        ["状态（pong 表示在线）", "status"]
+      ]
+    },
     "list-homeworks": {
-      "appID": "com.stickyhomeworks2",
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
       "openSocketID": "homework",
       "description": "获取当前所有作业的列表，返回包含科目、正文、截止日期、标签的 JSON 数组",
       "args": {
@@ -19,7 +36,7 @@
       ]
     },
     "add-homework": {
-      "appID": "com.stickyhomeworks2",
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
       "openSocketID": "homework",
       "description": "添加一条新作业到列表中",
       "args": {
@@ -55,7 +72,7 @@
       ]
     },
     "edit-homework": {
-      "appID": "com.stickyhomeworks2",
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
       "openSocketID": "homework",
       "description": "修改一条已有作业的科目、正文、截止日期或标签",
       "args": {
@@ -95,7 +112,7 @@
       ]
     },
     "delete-homework": {
-      "appID": "com.stickyhomeworks2",
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
       "openSocketID": "homework",
       "description": "按 GUID 删除指定作业",
       "args": {
@@ -115,7 +132,7 @@
       ]
     },
     "list-subjects": {
-      "appID": "com.stickyhomeworks2",
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
       "openSocketID": "homework",
       "description": "获取所有已配置的科目名称",
       "args": {
@@ -131,7 +148,7 @@
       ]
     },
     "manage-subjects": {
-      "appID": "com.stickyhomeworks2",
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
       "openSocketID": "homework",
       "description": "添加、重命名或删除科目",
       "args": {
@@ -164,8 +181,23 @@
         ["状态", "status"]
       ]
     },
+    "ping-control": {
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
+      "openSocketID": "control",
+      "description": "心跳检测，检查 control 接口是否在线",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "ping",
+          "description": "操作类型（固定为 ping）"
+        }
+      },
+      "returns": [
+        ["状态（pong 表示在线）", "status"]
+      ]
+    },
     "hide-window": {
-      "appID": "com.stickyhomeworks2",
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
       "openSocketID": "control",
       "description": "隐藏 StickyHomeworks2 主窗口",
       "args": {
@@ -180,7 +212,7 @@
       ]
     },
     "show-window": {
-      "appID": "com.stickyhomeworks2",
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
       "openSocketID": "control",
       "description": "显示 StickyHomeworks2 主窗口并激活到前台",
       "args": {
@@ -195,7 +227,7 @@
       ]
     },
     "set-topmost": {
-      "appID": "com.stickyhomeworks2",
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
       "openSocketID": "control",
       "description": "设置主窗口是否置顶",
       "args": {
@@ -218,7 +250,7 @@
       ]
     },
     "set-position": {
-      "appID": "com.stickyhomeworks2",
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
       "openSocketID": "control",
       "description": "设置主窗口在屏幕上的位置",
       "args": {
@@ -243,7 +275,7 @@
       ]
     },
     "set-size": {
-      "appID": "com.stickyhomeworks2",
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
       "openSocketID": "control",
       "description": "设置主窗口的宽度和高度",
       "args": {
@@ -268,7 +300,7 @@
       ]
     },
     "set-title": {
-      "appID": "com.stickyhomeworks2",
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
       "openSocketID": "control",
       "description": "修改主窗口显示的标题文字",
       "args": {
@@ -288,7 +320,7 @@
       ]
     },
     "get-window-state": {
-      "appID": "com.stickyhomeworks2",
+      "appID": "com.github.stickyhomeworks2.stickyhomeworks2",
       "openSocketID": "control",
       "description": "获取主窗口当前的位置、尺寸、可见性、置顶状态和标题",
       "args": {

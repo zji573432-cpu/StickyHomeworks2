@@ -36,7 +36,18 @@
 - [x] 插入与管理表情包
 - [x] 插入图片
 - [x] 插入链接
+- [x] KnotLink 联动（远程管理作业与窗口）
 - [ ] oobe
+
+## KnotLink 联动
+
+本应用支持 [KnotLink](https://knotlink.cn) 协议联动，可作为**独立式节点**接入 KnotLink，供教师端或其他节点远程调用：
+
+- **AppID**：`com.github.stickyhomeworks2.stickyhomeworks2`
+- **作业管理**（`homework`）：查询 / 添加 / 修改 / 删除作业，管理科目
+- **窗口控制**（`control`）：显示 / 隐藏窗口、置顶、移动、缩放、改标题、查状态
+
+启动时应用会自动把清单释放到 `%LOCALAPPDATA%\KnotLink\<AppID>\` 并注册到 KnotLink，退出时清理，KnotHub 无需手动安装即可发现本节点。接口清单见 [KnotLink-Output/pr/com.github.stickyhomeworks2.stickyhomeworks2/FuncList.json](KnotLink-Output/pr/com.github.stickyhomeworks2.stickyhomeworks2/FuncList.json)，详细调用文档见 [sh2-knotlink-api.md](sh2-knotlink-api.md)。
 
 ## 开始使用
 

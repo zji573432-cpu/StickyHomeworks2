@@ -55,7 +55,7 @@ namespace KnotLink
             string payload = parts[1];
 
             if (OnQuestionAsync == null)
-                throw new InvalidOperationException("OnQuestionAsync callback is not set. Call SetRecvFunc or set OnQuestionAsync before receiving data.");
+                throw new InvalidOperationException("OnQuestionAsync callback is not set. Set OnQuestionAsync before receiving data.");
 
             string reply = await OnQuestionAsync(payload).ConfigureAwait(false);
             string response = questionId + "&*&" + reply;
