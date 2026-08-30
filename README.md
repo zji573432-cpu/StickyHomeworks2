@@ -59,6 +59,13 @@
 - Windows 10 及以上版本的系统，x64架构
 - 已安装[.NET 8.0桌面运行时](https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-8.0.1-windows-x64-installer)
 
+### 1.5（可选）安装 KnotLink 生态组件
+
+如需使用 [KnotLink 联动](#knotlink-联动)（远程布置作业、Agent 调用、窗口控制），请先安装：
+
+- [KnotLinkService](https://github.com/KnotLink-Protocol/KnotLinkService) — KnotLink 本地服务，**必需**
+- [KnotHub](https://github.com/KnotLink-Protocol/KnotHub) — 节点管理与发现面板，**推荐**
+
 ### 2. 下载软件本体
 
 对于普通用户，可以在以下渠道下载到本软件，请根据自身网络环境选择合适的渠道。
