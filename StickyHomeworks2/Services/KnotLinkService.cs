@@ -12,44 +12,23 @@ namespace StickyHomeworks.Services;
 public class KnotLinkService : ObservableRecipient, IHostedService
 {
     private const string AppIdConst = "com.stickyhomeworks2";
-    private const string OpenSocketIdConst = "homework";
+    private const string HomeworkSocketId = "homework";
+    private const string ControlSocketId = "control";
 
     private readonly ProfileService _profileService;
     private readonly SettingsService _settingsService;
+    private readonly MainWindow _mainWindow;
     private readonly ILogger<KnotLinkService> _logger;
     private readonly SemaphoreSlim _profileLock = new(1, 1);
     private readonly SemaphoreSlim _settingsLock = new(1, 1);
 
-    private OpenSocketResponser? _responser;
+    private OpenSocketResponser? _homeworkResponser;
+    private OpenSocketResponser? _controlResponser;
     private CancellationTokenSource? _cts;
-    private bool _isConnected;
-    private string _statusText = "未连接";
-
-    public string AppId => AppIdConst;
-    public string OpenSocketId => OpenSocketIdConst;
-
-    public bool IsConnected
-    {
-        get => _isConnected;
-        private set
-        {
-            if (value == _isConnected) return;
-            _isConnected = value;
-            OnPropertyChanged();
-            StatusText = value ? "已连接" : "连接断开";
-        }
-    }
-
-    public string StatusText
-    {
-        get => _statusText;
-        private set
-        {
-            if (value == _statusText) return;
-            _statusText = value;
-            OnPropertyChanged();
-        }
-    }
+    private bool _isHomeworkConnected;
+    private bool _isControlConnected;
+    private string _homeworkStatusText = "未连接";
+    private string _controlStatusText = "未连接";
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -57,79 +36,207 @@ public class KnotLinkService : ObservableRecipient, IHostedService
         WriteIndented = false
     };
 
+    public string AppId => AppIdConst;
+
+    public bool IsHomeworkConnected
+    {
+        get => _isHomeworkConnected;
+        private set
+        {
+            if (value == _isHomeworkConnected) return;
+            _isHomeworkConnected = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsControlConnected
+    {
+        get => _isControlConnected;
+        private set
+        {
+            if (value == _isControlConnected) return;
+            _isControlConnected = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string HomeworkStatusText
+    {
+        get => _homeworkStatusText;
+        private set
+        {
+            if (value == _homeworkStatusText) return;
+            _homeworkStatusText = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string ControlStatusText
+    {
+        get => _controlStatusText;
+        private set
+        {
+            if (value == _controlStatusText) return;
+            _controlStatusText = value;
+            OnPropertyChanged();
+        }
+    }
+
     public KnotLinkService(
         ProfileService profileService,
         SettingsService settingsService,
+        MainWindow mainWindow,
         ILogger<KnotLinkService> logger)
     {
         _profileService = profileService;
         _settingsService = settingsService;
+        _mainWindow = mainWindow;
         _logger = logger;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        _ = Task.Run(() => RunAsync(_cts.Token), _cts.Token);
+
+        // 监听总开关变化，动态启停
+        _settingsService.Settings.PropertyChanged += OnKnotLinkSettingChanged;
+
+        if (_settingsService.Settings.IsKnotLinkEnabled)
+        {
+            StartAllResponsers();
+        }
+
         return Task.CompletedTask;
+    }
+
+    private void OnKnotLinkSettingChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(Settings.IsKnotLinkEnabled))
+        {
+            if (_settingsService.Settings.IsKnotLinkEnabled)
+                StartAllResponsers();
+            else
+                StopAllResponsers();
+        }
+    }
+
+    private void StartAllResponsers()
+    {
+        StopAllResponsers();
+
+        // 为每个接口创建独立的 CTS
+        if (_cts == null || _cts.IsCancellationRequested)
+            return;
+
+        _ = Task.Run(() => RunResponserAsync(HomeworkSocketId,
+            r => _homeworkResponser = r,
+            connected => IsHomeworkConnected = connected,
+            status => HomeworkStatusText = status,
+            HandleHomeworkRequestAsync,
+            () => _settingsService.Settings.IsKnotLinkHomeworkEnabled,
+            _cts.Token), _cts.Token);
+
+        _ = Task.Run(() => RunResponserAsync(ControlSocketId,
+            r => _controlResponser = r,
+            connected => IsControlConnected = connected,
+            status => ControlStatusText = status,
+            HandleControlRequestAsync,
+            () => _settingsService.Settings.IsKnotLinkControlEnabled,
+            _cts.Token), _cts.Token);
+    }
+
+    private void StopAllResponsers()
+    {
+        try { _homeworkResponser?.Dispose(); } catch { }
+        try { _controlResponser?.Dispose(); } catch { }
+        _homeworkResponser = null;
+        _controlResponser = null;
+        IsHomeworkConnected = false;
+        IsControlConnected = false;
+        HomeworkStatusText = "未连接";
+        ControlStatusText = "未连接";
+    }
+
+    private async Task RunResponserAsync(
+        string socketId,
+        Action<OpenSocketResponser?> setResponser,
+        Action<bool> setConnected,
+        Action<string> setStatus,
+        Func<string, Task<string>> handler,
+        Func<bool> isEnabled,
+        CancellationToken ct)
+    {
+        while (!ct.IsCancellationRequested)
+        {
+            // 检查分开关
+            if (!isEnabled())
+            {
+                setStatus("已停用");
+                setConnected(false);
+                try { await Task.Delay(3000, ct); } catch (OperationCanceledException) { break; }
+                continue;
+            }
+
+            OpenSocketResponser? r = null;
+            try
+            {
+                setStatus("正在连接...");
+                _logger.LogInformation("正在连接 KnotLink ({SocketId}) ...", socketId);
+                r = new OpenSocketResponser(AppIdConst, socketId);
+                r.OnQuestionAsync = handler;
+                setResponser(r);
+                setConnected(true);
+                setStatus("已连接");
+                _logger.LogInformation("KnotLink OpenSocketResponser 已注册 (appid={AppId}, opensocketid={SocketId})",
+                    AppIdConst, socketId);
+
+                // 阻塞等待取消信号
+                var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+                await using var registration = ct.Register(() => tcs.TrySetResult(true));
+                await tcs.Task;
+
+                _logger.LogInformation("KnotLink ({SocketId}) 收到取消信号，正在退出...", socketId);
+                setConnected(false);
+                break;
+            }
+            catch (OperationCanceledException)
+            {
+                setConnected(false);
+                break;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "KnotLink ({SocketId}) 连接失败，5 秒后重试...", socketId);
+                setConnected(false);
+                setStatus($"连接失败: {ex.Message}");
+                try { r?.Dispose(); } catch { }
+                setResponser(null);
+                try { await Task.Delay(5000, ct); } catch (OperationCanceledException) { break; }
+            }
+        }
+
+        setConnected(false);
+        setStatus("未连接");
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("正在停止 KnotLink 服务...");
+        _settingsService.Settings.PropertyChanged -= OnKnotLinkSettingChanged;
         _cts?.Cancel();
-        _responser?.Dispose();
-        _responser = null;
+        StopAllResponsers();
+        _cts?.Dispose();
         return Task.CompletedTask;
     }
 
-    private async Task RunAsync(CancellationToken ct)
+    // ==================== homework 接口 ====================
+
+    private async Task<string> HandleHomeworkRequestAsync(string data)
     {
-        while (!ct.IsCancellationRequested)
-        {
-            try
-            {
-                StatusText = "正在连接...";
-                _logger.LogInformation("正在连接 KnotLink 服务 (127.0.0.1:6378)...");
-                _responser = new OpenSocketResponser(AppIdConst, OpenSocketIdConst);
-                _responser.OnQuestionAsync = HandleRequestAsync;
-                IsConnected = true;
-                _logger.LogInformation(
-                    "KnotLink OpenSocketResponser 已注册 (appid={AppId}, opensocketid={SocketId})",
-                    AppIdConst, OpenSocketIdConst);
+        if (!_settingsService.Settings.IsKnotLinkHomeworkEnabled)
+            return "status=err;message=homework opensocket disabled";
 
-                // 阻塞等待取消信号，保持后台线程存活
-                var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-                await using var registration = ct.Register(() => tcs.TrySetResult(true));
-                await tcs.Task;
-
-                _logger.LogInformation("KnotLink 服务收到取消信号，正在退出...");
-                IsConnected = false;
-                break;
-            }
-            catch (OperationCanceledException)
-            {
-                IsConnected = false;
-                break;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "KnotLink 连接失败，5 秒后重试...");
-                IsConnected = false;
-                StatusText = $"连接失败: {ex.Message}";
-                try { _responser?.Dispose(); } catch { /* ignore */ }
-                _responser = null;
-                try { await Task.Delay(5000, ct); } catch (OperationCanceledException) { break; }
-            }
-        }
-    }
-
-    /// <summary>
-    /// 处理来自 KnotLink 的请求（运行在 TcpClient 后台线程）。
-    /// </summary>
-    private async Task<string> HandleRequestAsync(string data)
-    {
-        _logger.LogInformation("KnotLink 收到请求: {Data}", data);
+        _logger.LogInformation("KnotLink [homework] 收到请求: {Data}", data);
 
         try
         {
@@ -151,14 +258,144 @@ public class KnotLinkService : ObservableRecipient, IHostedService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "KnotLink 处理请求失败");
+            _logger.LogError(ex, "KnotLink [homework] 处理请求失败");
             return $"status=err;message={ex.Message}";
         }
     }
 
-    /// <summary>
-    /// list-homeworks: 读取 Profile.json，返回全部作业
-    /// </summary>
+    // ==================== control 接口 ====================
+
+    private async Task<string> HandleControlRequestAsync(string data)
+    {
+        if (!_settingsService.Settings.IsKnotLinkControlEnabled)
+            return "status=err;message=control opensocket disabled";
+
+        _logger.LogInformation("KnotLink [control] 收到请求: {Data}", data);
+
+        try
+        {
+            var kv = new KLKVMap();
+            kv.Deserialize(data);
+            var action = kv.Get("action");
+
+            return action switch
+            {
+                "ping" => "status=pong",
+                "hide-window" => await HandleHideWindowAsync(),
+                "show-window" => await HandleShowWindowAsync(),
+                "set-topmost" => await HandleSetTopmostAsync(kv),
+                "set-position" => await HandleSetPositionAsync(kv),
+                "set-size" => await HandleSetSizeAsync(kv),
+                "set-title" => await HandleSetTitleAsync(kv),
+                "get-window-state" => await HandleGetWindowStateAsync(),
+                _ => "status=err;message=unknown action"
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "KnotLink [control] 处理请求失败");
+            return $"status=err;message={ex.Message}";
+        }
+    }
+
+    private async Task<string> HandleHideWindowAsync()
+    {
+        await Application.Current.Dispatcher.InvokeAsync(() => _mainWindow.Hide());
+        _logger.LogInformation("KnotLink [control] hide-window");
+        return "status=ok";
+    }
+
+    private async Task<string> HandleShowWindowAsync()
+    {
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            _mainWindow.Show();
+            _mainWindow.Activate();
+        });
+        _logger.LogInformation("KnotLink [control] show-window");
+        return "status=ok";
+    }
+
+    private async Task<string> HandleSetTopmostAsync(KLKVMap kv)
+    {
+        var value = kv.Get("value");
+        var topmost = string.Equals(value, "true", StringComparison.OrdinalIgnoreCase);
+        await Application.Current.Dispatcher.InvokeAsync(() => _mainWindow.Topmost = topmost);
+        _logger.LogInformation("KnotLink [control] set-topmost: {Value}", topmost);
+        return "status=ok";
+    }
+
+    private async Task<string> HandleSetPositionAsync(KLKVMap kv)
+    {
+        var xStr = kv.Get("x");
+        var yStr = kv.Get("y");
+        if (!double.TryParse(xStr, out var x) || !double.TryParse(yStr, out var y))
+            return "status=err;message=invalid x or y";
+
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            _mainWindow.Left = x;
+            _mainWindow.Top = y;
+        });
+        _logger.LogInformation("KnotLink [control] set-position: x={X}, y={Y}", x, y);
+        return "status=ok";
+    }
+
+    private async Task<string> HandleSetSizeAsync(KLKVMap kv)
+    {
+        var wStr = kv.Get("width");
+        var hStr = kv.Get("height");
+        if (!double.TryParse(wStr, out var w) || !double.TryParse(hStr, out var h))
+            return "status=err;message=invalid width or height";
+
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            _mainWindow.Width = w;
+            _mainWindow.Height = h;
+        });
+        _logger.LogInformation("KnotLink [control] set-size: width={W}, height={H}", w, h);
+        return "status=ok";
+    }
+
+    private async Task<string> HandleSetTitleAsync(KLKVMap kv)
+    {
+        var title = kv.Get("title");
+        if (string.IsNullOrWhiteSpace(title))
+            return "status=err;message=title is required";
+
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            _settingsService.Settings.Title = title;
+        });
+        _settingsService.SaveSettings();
+        _logger.LogInformation("KnotLink [control] set-title: {Title}", title);
+        return "status=ok";
+    }
+
+    private async Task<string> HandleGetWindowStateAsync()
+    {
+        var result = await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            var kv = new KLKVMap
+            {
+                ["status"] = "ok",
+                ["visible"] = _mainWindow.IsVisible ? "true" : "false",
+                ["x"] = ((int)_mainWindow.Left).ToString(),
+                ["y"] = ((int)_mainWindow.Top).ToString(),
+                ["width"] = ((int)_mainWindow.Width).ToString(),
+                ["height"] = ((int)_mainWindow.Height).ToString(),
+                ["topmost"] = _mainWindow.Topmost ? "true" : "false",
+                ["title"] = _mainWindow.Title
+            };
+            return kv.Serialize();
+        });
+
+        _logger.LogInformation("KnotLink [control] get-window-state");
+        return result;
+    }
+
+    // ==================== homework handlers ====================
+
     private async Task<string> HandleListHomeworksAsync()
     {
         await _profileLock.WaitAsync();
@@ -182,7 +419,7 @@ public class KnotLinkService : ObservableRecipient, IHostedService
         }).ToList();
 
         var json = JsonSerializer.Serialize(homeworkList, JsonOptions);
-        _logger.LogInformation("KnotLink list-homeworks: 返回 {Count} 条作业", homeworkList.Count);
+        _logger.LogInformation("KnotLink list-homeworks: {Count} 条", homeworkList.Count);
 
         var resp = new KLKVMap
         {
@@ -193,10 +430,6 @@ public class KnotLinkService : ObservableRecipient, IHostedService
         return resp.Serialize();
     }
 
-    /// <summary>
-    /// add-homework: 新建作业，写入 Profile.json
-    /// 入参: subject;content;dueDate;tags (tags 用逗号分隔)
-    /// </summary>
     private async Task<string> HandleAddHomeworkAsync(KLKVMap kv)
     {
         var subject = kv.Get("subject");
@@ -235,18 +468,10 @@ public class KnotLinkService : ObservableRecipient, IHostedService
 
         _logger.LogInformation("KnotLink add-homework: id={Id}, subject={Subject}", homework.Id, subject);
 
-        var resp = new KLKVMap
-        {
-            ["status"] = "ok",
-            ["id"] = homework.Id.ToString()
-        };
+        var resp = new KLKVMap { ["status"] = "ok", ["id"] = homework.Id.ToString() };
         return resp.Serialize();
     }
 
-    /// <summary>
-    /// edit-homework: 修改指定作业
-    /// 入参: id;subject;content;dueDate;tags
-    /// </summary>
     private async Task<string> HandleEditHomeworkAsync(KLKVMap kv)
     {
         var idStr = kv.Get("id");
@@ -267,17 +492,13 @@ public class KnotLinkService : ObservableRecipient, IHostedService
                 var dueDateStr = kv.Get("dueDate");
                 var tagsStr = kv.Get("tags");
 
-                if (!string.IsNullOrWhiteSpace(subject))
-                    homework.Subject = subject;
-                if (!string.IsNullOrWhiteSpace(content))
-                    homework.Content = content;
+                if (!string.IsNullOrWhiteSpace(subject)) homework.Subject = subject;
+                if (!string.IsNullOrWhiteSpace(content)) homework.Content = content;
                 if (!string.IsNullOrWhiteSpace(dueDateStr) && DateTime.TryParse(dueDateStr, out var dt))
                     homework.DueTime = dt;
                 if (!string.IsNullOrWhiteSpace(tagsStr))
-                {
                     homework.Tags = new ObservableCollection<string>(
                         tagsStr.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
-                }
             });
 
             _profileService.SaveProfile();
@@ -288,14 +509,9 @@ public class KnotLinkService : ObservableRecipient, IHostedService
             _profileLock.Release();
         }
 
-        var resp = new KLKVMap { ["status"] = "ok" };
-        return resp.Serialize();
+        return "status=ok";
     }
 
-    /// <summary>
-    /// delete-homework: 删除指定作业
-    /// 入参: id
-    /// </summary>
     private async Task<string> HandleDeleteHomeworkAsync(KLKVMap kv)
     {
         var idStr = kv.Get("id");
@@ -322,53 +538,30 @@ public class KnotLinkService : ObservableRecipient, IHostedService
             _profileLock.Release();
         }
 
-        var resp = new KLKVMap { ["status"] = "ok" };
-        return resp.Serialize();
+        return "status=ok";
     }
 
-    /// <summary>
-    /// list-subjects: 返回 Settings.json 中的科目列表
-    /// </summary>
     private async Task<string> HandleListSubjectsAsync()
     {
         await _settingsLock.WaitAsync();
         List<string> snapshot;
-        try
-        {
-            snapshot = _settingsService.Settings.Subjects.ToList();
-        }
-        finally
-        {
-            _settingsLock.Release();
-        }
+        try { snapshot = _settingsService.Settings.Subjects.ToList(); }
+        finally { _settingsLock.Release(); }
 
         var subjects = string.Join(",", snapshot);
-        _logger.LogInformation("KnotLink list-subjects: {Count} 个科目", snapshot.Count);
+        _logger.LogInformation("KnotLink list-subjects: {Count} 个", snapshot.Count);
 
-        var resp = new KLKVMap
-        {
-            ["status"] = "ok",
-            ["subjects"] = subjects
-        };
+        var resp = new KLKVMap { ["status"] = "ok", ["subjects"] = subjects };
         return resp.Serialize();
     }
 
-    /// <summary>
-    /// manage-subjects: 管理科目（增/改/删）
-    /// 入参: op=add|edit|delete;name=xxx;newname=xxx
-    ///   - add: op=add;name=语文
-    ///   - edit: op=edit;name=语文;newname=数学
-    ///   - delete: op=delete;name=语文
-    /// </summary>
     private async Task<string> HandleManageSubjectsAsync(KLKVMap kv)
     {
         var op = kv.Get("op");
         var name = kv.Get("name");
 
-        if (string.IsNullOrWhiteSpace(op))
-            return "status=err;message=op is required";
-        if (string.IsNullOrWhiteSpace(name))
-            return "status=err;message=name is required";
+        if (string.IsNullOrWhiteSpace(op)) return "status=err;message=op is required";
+        if (string.IsNullOrWhiteSpace(name)) return "status=err;message=name is required";
 
         await _settingsLock.WaitAsync();
         try
@@ -383,57 +576,29 @@ public class KnotLinkService : ObservableRecipient, IHostedService
                         if (!subjects.Contains(name, StringComparer.OrdinalIgnoreCase))
                         {
                             subjects.Add(name);
-                            _logger.LogInformation("KnotLink manage-subjects: 添加科目 {Name}", name);
-                        }
-                        else
-                        {
-                            _logger.LogWarning("KnotLink manage-subjects: 科目 {Name} 已存在", name);
+                            _logger.LogInformation("KnotLink manage-subjects: add {Name}", name);
                         }
                         break;
-
                     case "edit":
                     {
                         var newName = kv.Get("newname");
                         if (string.IsNullOrWhiteSpace(newName))
-                            throw new InvalidOperationException("newname is required for edit operation");
-
+                            throw new InvalidOperationException("newname is required for edit");
                         var idx = subjects.IndexOf(name);
-                        if (idx >= 0)
-                        {
-                            subjects[idx] = newName;
-                            _logger.LogInformation("KnotLink manage-subjects: 重命名科目 {Old} -> {New}", name, newName);
-                        }
-                        else
-                        {
-                            _logger.LogWarning("KnotLink manage-subjects: 未找到科目 {Name}", name);
-                        }
+                        if (idx >= 0) subjects[idx] = newName;
                         break;
                     }
-
                     case "delete":
-                        if (!subjects.Remove(name))
-                        {
-                            _logger.LogWarning("KnotLink manage-subjects: 未找到科目 {Name}", name);
-                        }
-                        else
-                        {
-                            _logger.LogInformation("KnotLink manage-subjects: 删除科目 {Name}", name);
-                        }
+                        subjects.Remove(name);
                         break;
-
                     default:
                         throw new InvalidOperationException($"unknown op: {op}");
                 }
             });
-
             _settingsService.SaveSettings();
         }
-        finally
-        {
-            _settingsLock.Release();
-        }
+        finally { _settingsLock.Release(); }
 
-        var resp = new KLKVMap { ["status"] = "ok" };
-        return resp.Serialize();
+        return "status=ok";
     }
 }

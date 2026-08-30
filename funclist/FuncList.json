@@ -1,0 +1,314 @@
+{
+  "appName": "StickyHomeworks2",
+  "openSocket": {
+    "list-homeworks": {
+      "appID": "com.stickyhomeworks2",
+      "openSocketID": "homework",
+      "description": "获取当前所有作业的列表，返回包含科目、正文、截止日期、标签的 JSON 数组",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "list-homeworks",
+          "description": "操作类型（固定为 list-homeworks）"
+        }
+      },
+      "returns": [
+        ["作业总数", "count"],
+        ["作业列表（JSON数组）", "homeworks"],
+        ["状态", "status"]
+      ]
+    },
+    "add-homework": {
+      "appID": "com.stickyhomeworks2",
+      "openSocketID": "homework",
+      "description": "添加一条新作业到列表中",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "add-homework",
+          "description": "操作类型（固定为 add-homework）"
+        },
+        "subject": {
+          "type": "input",
+          "defaultVal": "数学",
+          "description": "科目名称"
+        },
+        "content": {
+          "type": "input",
+          "defaultVal": "完成课本第25页练习题",
+          "description": "作业正文（支持富文本/Markdown）"
+        },
+        "dueDate": {
+          "type": "input",
+          "defaultVal": "2026-07-27",
+          "description": "截止日期（yyyy-MM-dd，留空为当天）"
+        },
+        "tags": {
+          "type": "input",
+          "defaultVal": "必做,小组",
+          "description": "标签（英文逗号分隔）"
+        }
+      },
+      "returns": [
+        ["状态", "status"],
+        ["新作业ID", "id"]
+      ]
+    },
+    "edit-homework": {
+      "appID": "com.stickyhomeworks2",
+      "openSocketID": "homework",
+      "description": "修改一条已有作业的科目、正文、截止日期或标签",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "edit-homework",
+          "description": "操作类型（固定为 edit-homework）"
+        },
+        "id": {
+          "type": "input",
+          "defaultVal": "",
+          "description": "作业唯一标识（GUID）"
+        },
+        "subject": {
+          "type": "input",
+          "defaultVal": "数学",
+          "description": "新科目名（留空不修改）"
+        },
+        "content": {
+          "type": "input",
+          "defaultVal": "完成习题",
+          "description": "新正文（留空不修改）"
+        },
+        "dueDate": {
+          "type": "input",
+          "defaultVal": "2026-07-27",
+          "description": "新截止日期（留空不修改）"
+        },
+        "tags": {
+          "type": "input",
+          "defaultVal": "必做",
+          "description": "新标签（留空不修改）"
+        }
+      },
+      "returns": [
+        ["状态", "status"]
+      ]
+    },
+    "delete-homework": {
+      "appID": "com.stickyhomeworks2",
+      "openSocketID": "homework",
+      "description": "按 GUID 删除指定作业",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "delete-homework",
+          "description": "操作类型（固定为 delete-homework）"
+        },
+        "id": {
+          "type": "input",
+          "defaultVal": "",
+          "description": "作业唯一标识（GUID）"
+        }
+      },
+      "returns": [
+        ["状态", "status"]
+      ]
+    },
+    "list-subjects": {
+      "appID": "com.stickyhomeworks2",
+      "openSocketID": "homework",
+      "description": "获取所有已配置的科目名称",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "list-subjects",
+          "description": "操作类型（固定为 list-subjects）"
+        }
+      },
+      "returns": [
+        ["状态", "status"],
+        ["科目列表（逗号分隔）", "subjects"]
+      ]
+    },
+    "manage-subjects": {
+      "appID": "com.stickyhomeworks2",
+      "openSocketID": "homework",
+      "description": "添加、重命名或删除科目",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "manage-subjects",
+          "description": "操作类型（固定为 manage-subjects）"
+        },
+        "op": {
+          "type": "optional",
+          "description": "操作",
+          "options": [
+            ["添加科目", "add"],
+            ["重命名科目", "edit"],
+            ["删除科目", "delete"]
+          ]
+        },
+        "name": {
+          "type": "input",
+          "defaultVal": "物理",
+          "description": "科目名（add/delete 为目标名，edit 为旧名）"
+        },
+        "newname": {
+          "type": "input",
+          "defaultVal": "物理（新）",
+          "description": "新名称（仅 edit 操作时需要）"
+        }
+      },
+      "returns": [
+        ["状态", "status"]
+      ]
+    },
+    "hide-window": {
+      "appID": "com.stickyhomeworks2",
+      "openSocketID": "control",
+      "description": "隐藏 StickyHomeworks2 主窗口",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "hide-window",
+          "description": "操作类型（固定为 hide-window）"
+        }
+      },
+      "returns": [
+        ["状态", "status"]
+      ]
+    },
+    "show-window": {
+      "appID": "com.stickyhomeworks2",
+      "openSocketID": "control",
+      "description": "显示 StickyHomeworks2 主窗口并激活到前台",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "show-window",
+          "description": "操作类型（固定为 show-window）"
+        }
+      },
+      "returns": [
+        ["状态", "status"]
+      ]
+    },
+    "set-topmost": {
+      "appID": "com.stickyhomeworks2",
+      "openSocketID": "control",
+      "description": "设置主窗口是否置顶",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "set-topmost",
+          "description": "操作类型（固定为 set-topmost）"
+        },
+        "value": {
+          "type": "optional",
+          "description": "置顶开关",
+          "options": [
+            ["置顶", "true"],
+            ["取消置顶", "false"]
+          ]
+        }
+      },
+      "returns": [
+        ["状态", "status"]
+      ]
+    },
+    "set-position": {
+      "appID": "com.stickyhomeworks2",
+      "openSocketID": "control",
+      "description": "设置主窗口在屏幕上的位置",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "set-position",
+          "description": "操作类型（固定为 set-position）"
+        },
+        "x": {
+          "type": "input",
+          "defaultVal": "100",
+          "description": "左上角 X 坐标（像素）"
+        },
+        "y": {
+          "type": "input",
+          "defaultVal": "100",
+          "description": "左上角 Y 坐标（像素）"
+        }
+      },
+      "returns": [
+        ["状态", "status"]
+      ]
+    },
+    "set-size": {
+      "appID": "com.stickyhomeworks2",
+      "openSocketID": "control",
+      "description": "设置主窗口的宽度和高度",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "set-size",
+          "description": "操作类型（固定为 set-size）"
+        },
+        "width": {
+          "type": "input",
+          "defaultVal": "400",
+          "description": "窗口宽度（像素）"
+        },
+        "height": {
+          "type": "input",
+          "defaultVal": "800",
+          "description": "窗口高度（像素）"
+        }
+      },
+      "returns": [
+        ["状态", "status"]
+      ]
+    },
+    "set-title": {
+      "appID": "com.stickyhomeworks2",
+      "openSocketID": "control",
+      "description": "修改主窗口显示的标题文字",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "set-title",
+          "description": "操作类型（固定为 set-title）"
+        },
+        "title": {
+          "type": "input",
+          "defaultVal": "作业",
+          "description": "新标题文字"
+        }
+      },
+      "returns": [
+        ["状态", "status"]
+      ]
+    },
+    "get-window-state": {
+      "appID": "com.stickyhomeworks2",
+      "openSocketID": "control",
+      "description": "获取主窗口当前的位置、尺寸、可见性、置顶状态和标题",
+      "args": {
+        "action": {
+          "type": "static",
+          "value": "get-window-state",
+          "description": "操作类型（固定为 get-window-state）"
+        }
+      },
+      "returns": [
+        ["状态", "status"],
+        ["是否可见（true/false）", "visible"],
+        ["X 坐标", "x"],
+        ["Y 坐标", "y"],
+        ["宽度", "width"],
+        ["高度", "height"],
+        ["是否置顶（true/false）", "topmost"],
+        ["标题", "title"]
+      ]
+    }
+  },
+  "signal": {}
+}
