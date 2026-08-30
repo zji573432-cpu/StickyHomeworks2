@@ -48,6 +48,11 @@
   <ItemGroup>
     <Resource Include="Assets\**" />
   </ItemGroup>
+  <!-- KnotLink 清单内嵌：KnotLink-Output/pr 是唯一事实来源，KnotLinkRegistration 启动时释放 -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\KnotLink-Output\pr\com.github.stickyhomeworks2.stickyhomeworks2\standalone_manifest.json" LogicalName="KnotLink.standalone_manifest.json" />
+    <EmbeddedResource Include="..\KnotLink-Output\pr\com.github.stickyhomeworks2.stickyhomeworks2\FuncList.json" LogicalName="KnotLink.FuncList.json" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ClassIsland.Shared.IPC" Version="2.0.3.1" />
     <PackageReference Include="Emoji.Wpf" Version="0.3.4" />

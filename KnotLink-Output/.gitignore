@@ -1,0 +1,8 @@
+# KnotLink-Output 忽略规则
+
+# release 目录下只跟踪清单/文档等基本文件，忽略二进制产物
+release/**
+!release/**/
+!release/*/*.json
+!release/*/logo.png
+!release/*/README.md

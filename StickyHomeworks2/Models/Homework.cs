@@ -6,11 +6,23 @@ namespace StickyHomeworks.Models;
 
 public class Homework : ObservableRecipient
 {
+    private Guid _id = Guid.NewGuid();
     private string _content = "";
     private string _subject = "";
     private DateTime _dueTime = DateTime.Today;
     private ObservableCollection<string> _tags = new();
     private DateTime? _firstExpiredShowTime;
+
+    public Guid Id
+    {
+        get => _id;
+        set
+        {
+            if (value == _id) return;
+            _id = value;
+            OnPropertyChanged();
+        }
+    }
 
     public string Content
     {

@@ -1315,6 +1315,49 @@
 
 
                     <!-- 关于 -->
+                    <TabItem Header="KnotLink">
+                        <ScrollViewer>
+                            <StackPanel Style="{StaticResource SettingsPageStackPanelStyle}">
+                                <TextBlock Text="KnotLink 联动"
+                                    Style="{StaticResource MaterialDesignHeadline5TextBlock}"/>
+                                <TextBlock Margin="0 8 0 12" Opacity="0.75"
+                                    Text="通过 KnotLink 协议接收教师端远程请求，实现作业数据同步与窗口控制"/>
+
+                                <!-- 总开关 -->
+                                <ely:SettingsCard IconGlyph="Connection"
+                                    Header="启用 KnotLink"
+                                    Description="控制所有 KnotLink 接口的启停"
+                                    IsOn="{Binding Settings.IsKnotLinkEnabled, Mode=TwoWay}"/>
+
+                                <!-- homework 接口 -->
+                                <ely:SettingsExpanderCard IconGlyph="BookOpenOutline"
+                                    Header="作业接口 (homework)"
+                                    Description="作业 CRUD 远程调用"
+                                    IsOn="{Binding Settings.IsKnotLinkHomeworkEnabled, Mode=TwoWay}"
+                                    ContentIconGlyph="Connection"
+                                    ContentHeader="连接状态"
+                                    ContentDescription="homework opensocket 连接状态"
+                                    Margin="0 0 0 6">
+                                    <TextBlock Text="{Binding KnotLinkService.HomeworkStatusText}"
+                                        Opacity="0.75" VerticalAlignment="Center"/>
+                                </ely:SettingsExpanderCard>
+
+                                <!-- control 接口 -->
+                                <ely:SettingsExpanderCard IconGlyph="MonitorDashboard"
+                                    Header="控制接口 (control)"
+                                    Description="窗口控制远程调用（隐藏/显示/位置/大小/置顶/标题）"
+                                    IsOn="{Binding Settings.IsKnotLinkControlEnabled, Mode=TwoWay}"
+                                    ContentIconGlyph="Connection"
+                                    ContentHeader="连接状态"
+                                    ContentDescription="control opensocket 连接状态"
+                                    Margin="0 0 0 6">
+                                    <TextBlock Text="{Binding KnotLinkService.ControlStatusText}"
+                                        Opacity="0.75" VerticalAlignment="Center"/>
+                                </ely:SettingsExpanderCard>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
                     <TabItem Header="关于">
                         <ScrollViewer>
                             <StackPanel Margin="6"

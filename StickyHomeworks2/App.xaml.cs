@@ -74,6 +74,8 @@ public partial class App : AppEx
                 services.AddSingleton<ImageService>();
                 services.AddSingleton<ClassIslandIpcService>();
                 services.AddHostedService(sp => sp.GetRequiredService<ClassIslandIpcService>());
+                services.AddSingleton<KnotLinkService>();
+                services.AddHostedService(sp => sp.GetRequiredService<KnotLinkService>());
                 services.AddSingleton<AppLogService>();
                 services.AddSingleton<ILoggerProvider, AppLoggerProvider>();
                 services.AddSingleton<ILoggerProvider, FileLoggerProvider>();
@@ -93,6 +95,11 @@ public partial class App : AppEx
             Build();
         Logger = GetService<ILogger<App>>();
         WpfBindingDiagnosticsHelper.Initialize(Logger);
+
+        // KnotLink 独立式节点自注册：启动释放清单+写注册表，真正退出时清理
+        // （应用有托盘，最小化到托盘不算退出，故清理挂在 Application.Exit）
+        KnotLinkRegistration.Register(msg => Logger?.LogInformation("{Message}", msg));
+        System.Windows.Application.Current.Exit += (_, _) => KnotLinkRegistration.Unregister(msg => Logger?.LogInformation("{Message}", msg));
 
         _ = Host.StartAsync();
         GetService<AppDbContext>();

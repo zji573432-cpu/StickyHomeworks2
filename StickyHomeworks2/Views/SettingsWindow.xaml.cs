@@ -60,6 +60,7 @@ public partial class SettingsWindow : MyWindow
 
     public WallpaperPickingService WallpaperPickingService { get; }
     public ClassIslandIpcService ClassIslandIpcService { get; }
+    public KnotLinkService KnotLinkService { get; }
     public EchoCaveService EchoCaveService { get; }
 
     private readonly SettingsService _settingsService;
@@ -88,11 +89,13 @@ public partial class SettingsWindow : MyWindow
     public SettingsWindow(WallpaperPickingService wallpaperPickingService,
         SettingsService settingsService,
         ClassIslandIpcService classIslandIpcService,
+        KnotLinkService knotLinkService,
         EchoCaveService echoCaveService,
         ILogger<SettingsWindow> logger)
     {
         WallpaperPickingService = wallpaperPickingService;
         ClassIslandIpcService = classIslandIpcService;
+        KnotLinkService = knotLinkService;
         EchoCaveService = echoCaveService;
         _settingsService = settingsService;
         _logger = logger;

@@ -53,6 +53,9 @@ public class Settings : ObservableRecipient
     private ObservableCollection<SubjectAction> _classIslandSubjects = new();
     private HomeworkTemplateConfig _homeworkTemplate = new();
     private int _updateChannel = 0;
+    private bool _isKnotLinkEnabled = true;
+    private bool _isKnotLinkHomeworkEnabled = true;
+    private bool _isKnotLinkControlEnabled = true;
 
     public double WindowX
     {
@@ -544,6 +547,43 @@ public class Settings : ObservableRecipient
         {
             if (value == _updateChannel) return;
             _updateChannel = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
+    #region KnotLink
+
+    public bool IsKnotLinkEnabled
+    {
+        get => _isKnotLinkEnabled;
+        set
+        {
+            if (value == _isKnotLinkEnabled) return;
+            _isKnotLinkEnabled = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsKnotLinkHomeworkEnabled
+    {
+        get => _isKnotLinkHomeworkEnabled;
+        set
+        {
+            if (value == _isKnotLinkHomeworkEnabled) return;
+            _isKnotLinkHomeworkEnabled = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsKnotLinkControlEnabled
+    {
+        get => _isKnotLinkControlEnabled;
+        set
+        {
+            if (value == _isKnotLinkControlEnabled) return;
+            _isKnotLinkControlEnabled = value;
             OnPropertyChanged();
         }
     }
