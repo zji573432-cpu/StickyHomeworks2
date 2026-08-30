@@ -366,3 +366,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 .idea/*
+
+# 本机运行数据，不入库
+Profile.json
+Settings.json
