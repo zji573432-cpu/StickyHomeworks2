@@ -43,6 +43,8 @@
 
 本应用支持 [KnotLink](https://knotlink.cn) 协议联动，可作为**独立式节点**接入 KnotLink，供教师端或其他节点远程调用：
 
+> **前置依赖**：使用前请先安装 [KnotLinkService](https://github.com/KnotLink-Protocol/KnotLinkService)（KnotLink 本地服务，必需）与 [KnotHub](https://github.com/KnotLink-Protocol/KnotHub)（节点管理面板，推荐）。
+
 - **AppID**：`com.github.stickyhomeworks2.stickyhomeworks2`
 - **作业管理**（`homework`）：查询 / 添加 / 修改 / 删除作业，管理科目
 - **窗口控制**（`control`）：显示 / 隐藏窗口、置顶、移动、缩放、改标题、查状态
