@@ -236,13 +236,14 @@ public class KnotLinkService : ObservableRecipient, IHostedService
         if (!_settingsService.Settings.IsKnotLinkHomeworkEnabled)
             return "status=err;message=homework opensocket disabled";
 
-        _logger.LogInformation("KnotLink [homework] 收到请求: {Data}", data);
-
         try
         {
             var kv = new KLKVMap();
             kv.Deserialize(data);
             var action = kv.Get("action");
+
+            // 只记 action 与长度，不记全量 payload：避免大文本刷日志拖慢回复路径
+            _logger.LogTrace("KnotLink [homework] 收到请求: action={Action}, len={Length}", action, data.Length);
 
             return action switch
             {
@@ -270,13 +271,14 @@ public class KnotLinkService : ObservableRecipient, IHostedService
         if (!_settingsService.Settings.IsKnotLinkControlEnabled)
             return "status=err;message=control opensocket disabled";
 
-        _logger.LogInformation("KnotLink [control] 收到请求: {Data}", data);
-
         try
         {
             var kv = new KLKVMap();
             kv.Deserialize(data);
             var action = kv.Get("action");
+
+            // 只记 action 与长度，不记全量 payload
+            _logger.LogTrace("KnotLink [control] 收到请求: action={Action}, len={Length}", action, data.Length);
 
             return action switch
             {
