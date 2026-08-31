@@ -140,7 +140,7 @@ public class GlycoproteinIpcService : IHostedService, INotifyPropertyChanged
             #endif
             
             WindowGlycoActions.Register(node, _settingsService, _logger);
-            node.AddEvent(new Field.Event {
+            node.AddEvent<HomeworkChangedPayload>(new Field.Event {
                 Id = HomeworkChangedEventId,
                 FriendlyName = "作业数据变更",
                 Description = "作业数据发生变更时广播"
