@@ -42,6 +42,7 @@ public class Settings : ObservableRecipient
     private bool _autooutwork = true;
     private bool _delayedCleanupEnabled = false;
     private bool _isMainWindowVisible = true;
+    private bool _isMainWindowTopmost = false;
     private bool _isExpiredMarkEnabled = false;
     private bool _debugginginterface = false;
     private Color _expiredMarkColor = Color.FromRgb(0x33, 0x33, 0x33);
@@ -478,6 +479,17 @@ public class Settings : ObservableRecipient
         {
             if (value == _isMainWindowVisible) return;
             _isMainWindowVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsMainWindowTopmost
+    {
+        get => _isMainWindowTopmost;
+        set
+        {
+            if (value == _isMainWindowTopmost) return;
+            _isMainWindowTopmost = value;
             OnPropertyChanged();
         }
     }

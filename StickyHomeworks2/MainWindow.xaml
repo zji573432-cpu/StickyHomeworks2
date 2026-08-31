@@ -18,6 +18,7 @@
         TextElement.FontSize="14"
         FontFamily="{StaticResource HarmonyOsSans}"
         Title="{Binding SettingsService.Settings.Title, Mode=OneWay}" 
+        Topmost="{Binding SettingsService.Settings.IsMainWindowTopmost, Mode=OneWay}"
         ShowInTaskbar="{Binding SettingsService.Settings.IsDebugShowInTaskBar}"
         d:DataContext="{d:DesignInstance local:MainWindow}"
         Closing="MainWindow_OnClosing"
