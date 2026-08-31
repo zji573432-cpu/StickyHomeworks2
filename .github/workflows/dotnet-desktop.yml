@@ -64,8 +64,7 @@ jobs:
           --self-contained true `
           --output ./publish `
           -p:PublishSingleFile=true `
-          -p:IncludeNativeLibrariesForSelfExtract=true `
-          -p:PublishReadyToRun=true
+          -p:IncludeNativeLibrariesForSelfExtract=true 
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
