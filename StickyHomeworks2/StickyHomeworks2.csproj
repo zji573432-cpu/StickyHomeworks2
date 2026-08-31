@@ -12,6 +12,7 @@
 	<IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
 	<ApplicationIcon>Assets\AppLogo.ico</ApplicationIcon>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<PublishReadyToRun>false</PublishReadyToRun>
     <UpdaterRepoRoot>$(MSBuildThisFileDirectory)..\StickyHomeworks2.Updater\</UpdaterRepoRoot>
     <!-- 与默认 bin\...\publish 分离：嵌套 Publish 会继承外层 dotnet publish 的 PublishDir，必须显式指定否则 exe 会落到主工程的 ./publish -->
     <UpdaterEmbeddedPublishDir>$(UpdaterRepoRoot)obj\embed-publish\$(Configuration)\win-x64\</UpdaterEmbeddedPublishDir>
