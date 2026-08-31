@@ -42,6 +42,7 @@ public class Settings : ObservableRecipient
     private bool _autooutwork = true;
     private bool _delayedCleanupEnabled = false;
     private bool _isMainWindowVisible = true;
+    private bool _isMainWindowTopmost = false;
     private bool _isExpiredMarkEnabled = false;
     private bool _debugginginterface = false;
     private Color _expiredMarkColor = Color.FromRgb(0x33, 0x33, 0x33);
@@ -53,6 +54,8 @@ public class Settings : ObservableRecipient
     private ObservableCollection<SubjectAction> _classIslandSubjects = new();
     private HomeworkTemplateConfig _homeworkTemplate = new();
     private int _updateChannel = 0;
+    private bool _isGlycoproteinEnabled = false;
+    private string _glycoproteinNodeId = "";
 
     public double WindowX
     {
@@ -480,6 +483,17 @@ public class Settings : ObservableRecipient
         }
     }
 
+    public bool IsMainWindowTopmost
+    {
+        get => _isMainWindowTopmost;
+        set
+        {
+            if (value == _isMainWindowTopmost) return;
+            _isMainWindowTopmost = value;
+            OnPropertyChanged();
+        }
+    }
+
     public ObservableCollection<Color> SavedColors
     {
         get => _savedColors;
@@ -530,6 +544,43 @@ public class Settings : ObservableRecipient
             _homeworkTemplate = value;
             OnPropertyChanged();
         }
+    }
+
+    #endregion
+
+    #region Glycoprotein
+
+    public bool IsGlycoproteinEnabled
+    {
+        get => _isGlycoproteinEnabled;
+        set
+        {
+            if (value == _isGlycoproteinEnabled) return;
+            _isGlycoproteinEnabled = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>Glycoprotein 节点 ID (Gid), 同时用作本机节点名称。为空时自动生成随机 ID。</summary>
+    public string GlycoproteinNodeId
+    {
+        get => _glycoproteinNodeId;
+        set
+        {
+            if (value == _glycoproteinNodeId) return;
+            _glycoproteinNodeId = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public static string GenerateGlycoproteinNodeId() =>
+        $"stickyHomeworks-{Guid.NewGuid().ToString().Split('-')[1]}";
+
+    /// <summary>确保 Gid 已初始化, 为空时生成随机 ID (仅首次, 之后随设置持久化)。</summary>
+    public void EnsureGlycoproteinNodeId()
+    {
+        if (!string.IsNullOrWhiteSpace(_glycoproteinNodeId)) return;
+        GlycoproteinNodeId = GenerateGlycoproteinNodeId();
     }
 
     #endregion

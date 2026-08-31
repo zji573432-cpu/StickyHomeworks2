@@ -217,7 +217,7 @@ public partial class MainWindow : Window
         _logger.LogTrace("退出编辑模式: Hard={Hard}", hard);
     }
 
-    private void SetPos()
+    public void SetPos()
     {
         GetCurrentDpi(out var dpi, out _);
         Left = SettingsService.Settings.WindowX / dpi;

@@ -1279,8 +1279,8 @@
                         </Grid>
                     </TabItem>
 
-                    <!-- ClassIsland -->
-                    <TabItem Header="CI联动">
+                    <!-- Interaction -->
+                    <TabItem Header="联动">
                         <ScrollViewer>
                             <StackPanel Style="{StaticResource SettingsPageStackPanelStyle}">
                                 <TextBlock Text="ClassIsland 联动"
@@ -1301,13 +1301,52 @@
 
                                 <ely:SettingsCard IconGlyph="Connection"
                                     Header="连接状态"
-                                    Description="ICP服务活动状态">
+                                    Description="IPC服务活动状态">
                                     <ely:SettingsCard.Switcher>
                                         <TextBlock Text="{Binding ClassIslandIpcService.ConnectionStatus}"
                                             Opacity="0.75" VerticalAlignment="Center"/>
                                     </ely:SettingsCard.Switcher>
                                 </ely:SettingsCard>
 
+                                <TextBlock Text="Glycoprotein 服务"
+                                    Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                                    Margin="0 24 0 0"/>
+                                <TextBlock Margin="0 8 0 12" Opacity="0.75"
+                                    Text="接入 Glycoprotein 节点网络"/>
+
+                                <ely:SettingsCard IconGlyph="LanConnect"
+                                    Header="启用 Glycoprotein 服务"
+                                    Description="在本机 Glycoprotein 网络中注册 SH2 节点"
+                                    IsOn="{Binding Settings.IsGlycoproteinEnabled, Mode=TwoWay}"/>
+
+                                <ely:SettingsCard IconGlyph="Identifier"
+                                    Header="节点 ID"
+                                    Description="Glycoprotein 节点的唯一标识，修改后立即生效">
+                                    <ely:SettingsCard.Switcher>
+                                        <TextBox MinWidth="100"
+                                                 VerticalAlignment="Center"
+                                                 HorizontalContentAlignment="Right"
+                                                 Text="{Binding Settings.GlycoproteinNodeId}"/>
+                                    </ely:SettingsCard.Switcher>
+                                </ely:SettingsCard>
+
+                                <ely:SettingsCard IconGlyph="Connection"
+                                    Header="节点状态"
+                                    Description="Glycoprotein 节点活动状态">
+                                    <ely:SettingsCard.Switcher>
+                                        <TextBlock Text="{Binding GlycoproteinIpcService.IsRunning}"
+                                            Opacity="0.75" VerticalAlignment="Center"/>
+                                    </ely:SettingsCard.Switcher>
+                                </ely:SettingsCard>
+
+                                <ely:SettingsCard IconGlyph="Lan"
+                                    Header="通信位置"
+                                    Description="本节点 Glycoprotein 核心的通信位置">
+                                    <ely:SettingsCard.Switcher>
+                                        <TextBlock Text="{Binding GlycoSocketDirectory}"
+                                            Opacity="0.75" VerticalAlignment="Center"/>
+                                    </ely:SettingsCard.Switcher>
+                                </ely:SettingsCard>
                                 
                             </StackPanel>
                         </ScrollViewer>
