@@ -22,6 +22,7 @@ public class SettingsService : ObservableRecipient, IHostedService
         SubscribeSettings();
         LoadSettings();
         OnSettingsChanged += OnOnSettingsChanged;
+        Settings.EnsureGlycoproteinNodeId();
     }
 
     private void OnOnSettingsChanged(object? sender, PropertyChangedEventArgs e)

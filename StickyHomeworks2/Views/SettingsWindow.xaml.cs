@@ -60,7 +60,10 @@ public partial class SettingsWindow : MyWindow
 
     public WallpaperPickingService WallpaperPickingService { get; }
     public ClassIslandIpcService ClassIslandIpcService { get; }
+    public GlycoproteinIpcService GlycoproteinIpcService { get; }
     public EchoCaveService EchoCaveService { get; }
+
+    public string GlycoSocketDirectory => System.IO.Path.Combine(System.IO.Path.GetTempPath(), "glycoprotein");
 
     private readonly SettingsService _settingsService;
     private readonly ILogger<SettingsWindow> _logger;
@@ -88,11 +91,13 @@ public partial class SettingsWindow : MyWindow
     public SettingsWindow(WallpaperPickingService wallpaperPickingService,
         SettingsService settingsService,
         ClassIslandIpcService classIslandIpcService,
+        GlycoproteinIpcService glycoproteinIpcService,
         EchoCaveService echoCaveService,
         ILogger<SettingsWindow> logger)
     {
         WallpaperPickingService = wallpaperPickingService;
         ClassIslandIpcService = classIslandIpcService;
+        GlycoproteinIpcService = glycoproteinIpcService;
         EchoCaveService = echoCaveService;
         _settingsService = settingsService;
         _logger = logger;
